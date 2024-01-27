@@ -5,7 +5,7 @@ export interface DonationModel {
     donatedTo: String;
     donatedAmount: Number;
     points: Number;
-
+    date: String;
 }
 
 export const donationModelFromPrisma = async (prismaModel: Donation): Promise<DonationModel> => {
@@ -14,5 +14,6 @@ export const donationModelFromPrisma = async (prismaModel: Donation): Promise<Do
         donatedTo: prismaModel.donated_to,
         donatedAmount: prismaModel.donated_amount,
         points: prismaModel.points,
+        date: prismaModel.date,
     };
 };

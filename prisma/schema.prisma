@@ -26,6 +26,7 @@ model Donation {
     donated_to     String
     donated_amount Int
     points         Int
+    date           String
 
     User   User? @relation(fields: [userId], references: [id])
     userId Int?

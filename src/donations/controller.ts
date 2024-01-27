@@ -26,12 +26,18 @@ export const createDonation = catchAsync(
             );
         }
 
+        const date = new Date();
+
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Avg", "Sep", "Okt", "Nov", "Dec"];
+        const dateString = `${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+
         const donationPrisma = await prisma.donation.create({
             data: {
                 donated_to: donatedTo,
                 donated_amount: donatedAmount,
                 points,
-                userId
+                userId,
+                date: dateString
             }
         });
 
