@@ -4,6 +4,7 @@ import { createResponse } from '../util/createResponse';
 import prisma from '../util/db';
 import { userModelFromPrisma } from '../users/model';
 import { donationModelFromPrisma } from '../donations/model';
+import { hashPassword } from '../auth/util';
 
 export const user = catchAsync(
     async (req: Request, res: Response) => {
@@ -21,7 +22,7 @@ export const user = catchAsync(
 export const editUser = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
         const { id } = req.user!;
-        const { name, email, phone, about, photo } = req.body;
+        const { name, email, password, phone, about, photo } = req.body;
 
         let data: any = {};
         if (name) {
@@ -30,6 +31,10 @@ export const editUser = catchAsync(
 
         if (email) {
             data.email = email;
+        }
+
+        if (password) {
+            data.password = await hashPassword(password);
         }
 
         if (phone) {
