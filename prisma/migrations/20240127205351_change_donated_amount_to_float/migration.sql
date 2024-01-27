@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "Donation" ALTER COLUMN "donated_amount" SET DATA TYPE DOUBLE PRECISION;
+
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "donated_amount" SET DEFAULT 0.0,
+ALTER COLUMN "donated_amount" SET DATA TYPE DOUBLE PRECISION;

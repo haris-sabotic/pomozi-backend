@@ -15,7 +15,7 @@ model User {
     password       String
     about          String @default("")
     photo          String @default("default_user.png")
-    donated_amount Int    @default(0)
+    donated_amount Float  @default(0.0)
     points         Int    @default(0)
 
     donations Donation[]
@@ -24,7 +24,7 @@ model User {
 model Donation {
     id             Int    @id @default(autoincrement())
     donated_to     String
-    donated_amount Int
+    donated_amount Float
     points         Int
     date           String
 
