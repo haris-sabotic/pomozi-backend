@@ -21,6 +21,13 @@ app.use(cors({
 
 app.use('/api', router);
 
+import path from "path"
+
+app.get('/storage/:name', function (req: any, res: any) {
+  const filePath = path.join(__dirname, '..', 'storage', req.params.name);
+  res.sendFile(filePath);
+});
+
 app.listen(process.env.APP_PORT, () => {
   console.log(`Listening on port ${process.env.APP_PORT}`);
 });

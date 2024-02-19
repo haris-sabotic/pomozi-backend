@@ -19,10 +19,18 @@ export const createDonation = catchAsync(
         const user = await prisma.user.findFirst({
             where: { id: userId }
         });
-
         if (!user) {
             return next(
                 new CustomError('No user with that id exists', 400)
+            );
+        }
+
+        const organization = await prisma.organization.findFirst({
+            where: { id: parseInt(donatedTo) }
+        });
+        if (!organization) {
+            return next(
+                new CustomError('No organization with that id exists', 400)
             );
         }
 
@@ -33,7 +41,7 @@ export const createDonation = catchAsync(
 
         const donationPrisma = await prisma.donation.create({
             data: {
-                donated_to: donatedTo,
+                donated_to_id: parseInt(donatedTo),
                 donated_amount: donatedAmount,
                 points,
                 userId,
@@ -42,11 +50,35 @@ export const createDonation = catchAsync(
         });
 
 
+        const leaderBoard = await prisma.user.findMany({
+            orderBy: {
+                donated_amount: 'desc'
+            },
+            take: 10
+        });
+
+        let topThree = undefined;
+        let ranked = undefined;
+        if (leaderBoard[0].id == userId || leaderBoard[1].id == userId || leaderBoard[2].id == userId) {
+            topThree = true;
+        }
+        for (let i = 0; i < leaderBoard.length; i++) {
+            if (leaderBoard[i].id == userId) {
+                ranked = true;
+                break;
+            }
+        }
+
         await prisma.user.update({
             where: { id: userId },
             data: {
                 points: user.points + points,
                 donated_amount: user.donated_amount + donatedAmount,
+                alltime_total_points: {
+                    increment: points
+                },
+                alltime_been_ranked: ranked,
+                alltime_been_top_three: topThree
             }
         });
 

@@ -18,16 +18,62 @@ model User {
     donated_amount Float  @default(0.0)
     points         Int    @default(0)
 
-    donations Donation[]
+    donations  Donation[]
+    UserReward UserReward[]
+
+    created_at                   DateTime @default(now())
+    alltime_total_rewards_bought Int      @default(0)
+    alltime_total_points         Int      @default(0)
+    alltime_been_ranked          Boolean  @default(false)
+    alltime_been_top_three       Boolean  @default(false)
 }
 
 model Donation {
     id             Int    @id @default(autoincrement())
-    donated_to     String
     donated_amount Float
     points         Int
     date           String
 
-    User   User? @relation(fields: [userId], references: [id])
-    userId Int?
+    User   User @relation(fields: [userId], references: [id])
+    userId Int
+
+    donated_to    Organization @relation(fields: [donated_to_id], references: [id])
+    donated_to_id Int
+
+    created_at DateTime @default(now())
+}
+
+model Organization {
+    id              Int        @id @default(autoincrement())
+    name            String
+    donated_to_name String
+    description     String
+    url             String
+    photo           String
+    featured_photo  String?
+    lat             String
+    lng             String
+    Donation        Donation[]
+
+    created_at DateTime @default(now())
+}
+
+model Reward {
+    id          Int          @id @default(autoincrement())
+    name        String
+    description String
+    photo       String
+    price       Int
+    UserReward  UserReward[]
+}
+
+model UserReward {
+    id     Int  @id @default(autoincrement())
+    user   User @relation(fields: [userId], references: [id])
+    userId Int
+
+    reward   Reward @relation(fields: [rewardId], references: [id])
+    rewardId Int
+
+    count Int @default(1)
 }
