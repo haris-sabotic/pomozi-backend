@@ -4,7 +4,8 @@ import userRouter from './userRoutes';
 import donationRouter from './donationRoutes';
 import rewardRouter from './rewardRoutes';
 import organizationRouter from './organizationRoutes';
-import leaderboardRouter from './leaderboardRoutes';
+import statsRouter from './statsRoutes';
+import actionRouter from './actionRoutes';
 
 const router = Router();
 
@@ -13,6 +14,7 @@ router.use('/user', userRouter);
 router.use('/donation', donationRouter);
 router.use('/reward', rewardRouter);
 router.use('/organization', organizationRouter);
-router.use('/leaderboard', leaderboardRouter);
+router.use('/stats', statsRouter);
+router.use('/action', actionRouter);
 
 export default router;

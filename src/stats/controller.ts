@@ -20,26 +20,39 @@ export const leaderboard = catchAsync(
     }
 );
 
-const dateToString = (date: Date) => {
-    var dd = String(date.getDate()).padStart(2, '0');
-    var mm = String(date.getMonth() + 1).padStart(2, '0'); //January is 0!
-    var yyyy = date.getFullYear();
-
-    return yyyy + '-' + mm + '-' + dd;
-};
-
-export const topDonationsOfTheDay = catchAsync(
+export const topDonationOfTheDay = catchAsync(
     async (req: Request, res: Response) => {
+        let today = new Date();
+        today.setHours(0, 0, 0, 0);
+
         const donations = await prisma.donation.findMany({
             where: {
                 created_at: {
-                    gte: new Date()
+                    gte: today
                 }
             },
             orderBy: {
                 donated_amount: 'desc'
             },
-            take: 3
+            take: 1
+        });
+
+        let result: any = null;
+        if (donations.length >= 1) {
+            result = await donationModelFromPrisma(donations[0]);
+        }
+
+        return res.status(200).json(createResponse(result, 200));
+    }
+);
+
+export const last2Donations = catchAsync(
+    async (req: Request, res: Response) => {
+        const donations = await prisma.donation.findMany({
+            orderBy: {
+                created_at: 'desc'
+            },
+            take: 2
         });
 
         let result: any = {};
@@ -48,9 +61,6 @@ export const topDonationsOfTheDay = catchAsync(
         }
         if (donations.length >= 2) {
             result["second"] = await donationModelFromPrisma(donations[1]);
-        }
-        if (donations.length >= 3) {
-            result["third"] = await donationModelFromPrisma(donations[2]);
         }
 
         return res.status(200).json(createResponse(result, 200));
